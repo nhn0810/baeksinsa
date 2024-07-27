@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAEKSINSA</title>
+    <meta property="og:title" content="BAEKSINSA">
+    <meta property="og:description" content="백신사와 함께해요">
+    <meta property="og:image" content="thumbnail.jpg">
+    <meta property="og:url" content="https://nhn0810.github.io/baeksinsa/">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico"> <!-- ICO 형식 -->
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png"> <!-- PNG 형식, 작은 사이즈 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png"> <!-- PNG 형식, 큰 사이즈 -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png"> <!-- iOS 홈 화면 아이콘 -->
+    <link rel="manifest" href="img/site.webmanifest"> <!-- PWA 및 기타 정보 -->
+    <meta name="msapplication-TileColor" content="#ffffff"> <!-- Windows Tile 색상 -->
+    <meta name="msapplication-TileImage" content="img/mstile-144x144.png"> <!-- Windows Tile 아이콘 -->
+    <meta name="theme-color" content="#ffffff"> <!-- 브라우저 툴바 색상 -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            font-size: 5em;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+        }
+
+        .sticky-header .notification-button {
+            position: absolute;
+            left: calc(25%);
+            background-image: url('alarm1.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 30px;
+            height: 30px;
+            
+            cursor: pointer;
+        }
+
+        .sticky-header .title {
+            margin: 0;
+            text-align: center;
+            flex: 1;
+        }
+
+        .notification-popup {
+            display: none;
+            position: absolute;
+            top: 70px; 
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            z-index: 1000;
+            padding: 10px;
+            box-sizing: border-box;
+            max-height: 300px;
+            overflow-y: auto;
+            transition: top 0.3s ease, left 0.3s ease;
+        }
+
+        .notification-popup .header {
+            font-weight: bold;
+            padding-bottom: 0px;
+            text-align: center;
+        }
+
+        .notification-popup p {
+            margin: 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .notification-popup p:last-child {
+            border-bottom: none;
+        }
+
+        .notification-popup .empty-space {
+            height: 30px;
+            background-color: #f0f0f0;
+        }
+
+        .mail-content {
+            display: none;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 20px;
+            padding-top: 160px;
+        }
+
+        .header-subtitle {
+            font-size: 2em;
+            color: #000;
+            text-align: left;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 10px;
+            font-weight: 400;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item .price {
+            padding: 10px;
+            background: #fff;
+            text-align: left;
+            font-size: 1.2em;
+            position: relative;
+        }
+
+        .gallery-item .price .discount {
+            color: #f00;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .gallery-item .price .actual-price {
+            color: #000;
+        }
+
+        .text-container {
+            margin-top: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .text-container p {
+            font-size: 1em;
+            color: #333;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            width: 300px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .popup .close-popup {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .disclaimer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 1em;
+            color: #f00;
+            font-weight: bold;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .slider .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slider .slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .slider .prev, .slider .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .slider .prev {
+            left: 10px;
+        }
+
+        .slider .next {
+            right: 10px;
+        }
+
+        .call-to-action {
+            background-color: rgb(180, 0, 0); /* 빨간색 배경 */
+            color: #fff;
+            padding: 15px;
+            text-align: left;
+            margin: 0;
+            border-radius: 0px;
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .call-to-action a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .sticky-header {
+                font-size: 2em;
+                padding: 30px 10px;
+                white-space: nowrap;
+            }
+            .notification-button {
+                width: 20px;
+                height: 20px;
+            }
+            .header-subtitle {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gallery-item img {
+                height: 150px; /* 모바일에서 이미지 높이 조정 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sticky-header">
+        <div class="notification-button" onclick="toggleNotification()"></div>
+        <div class="title">BAEKSINSA</div>
+    </div>
+    <div class="notification-popup" id="notificationPopup">
+        <div class="header">알림</div>
+        <p onclick="showMail(1)">*필독* 여름 패션쇼 이벤트</p>
+        <p onclick="showMail(2)">여름방학</p>
+        <p onclick="showMail(3)">수련회</p>
+        <div class="empty-space"></div>
+    </div>
+    <div id="mailContent1" class="popup">
+        <h2>*필독* 여름 패션쇼 이벤트</h2>
+        <p>당사 "백신사"가 여름을 맞이하여<br>패션쇼를 주최하고자 합니다.<br>"이번 여름도 백신사와 함께"의 주제로 소개된 의류를 착용하시고 4층 데이비스홀로 방문해주시는 분들께는 간단한 미니게임 후에 보상을 지급해드리겠습니다.<br>의류는 건물 곳곳에 숨겨두었습니다.<br>좋은 하루 되십시오<br><br><br><br><br><br>-백신사- </p>
+        <button class="close-popup" onclick="closePopup(1)">닫기</button>
+    </div>
+    <div id="mailContent2" class="popup">
+        <h2>여름방학</h2>
+        <p>2024년도 1학기동안 고생많으셨습니다.<br>무더운 여름이지만 즐겁고 시원한 여름방학 되길 바랍니다.<br>무언가 해드리고 싶지만 가상의 쇼핑몰이라<br>특가판매를 진행해드리지 못하는 점<br>양해바랍니다.<br></p>
+        <button class="close-popup" onclick="closePopup(2)">닫기</button>
+    </div>
+    <div id="mailContent3" class="popup">
+        <h2>수련회</h2>
+        <p>이번 수련회가 하나님을 만나는 계기가 되길 기도합니다.</p>
+        <button class="close-popup" onclick="closePopup(3)">닫기</button>
+    </div>
+
+    <div class="container">
+
+        <div class="slider">
+            <button class="prev" onclick="prevSlide()">&#10094;</button>
+            <div class="slides">
+                <div class="slide">
+                    <img src="slide1.jpg" alt="Slide 1">
+                </div>
+                <div class="slide">
+                    <img src="slide2.jpg" alt="Slide 2">
+                </div>
+                <div class="slide">
+                    <img src="slide3.jpg" alt="Slide 3">
+                </div>
+            </div>
+            <div class="call-to-action">
+                <a href="https://www.youtube.com/@user-cp9ec3jc6u/streams" target="_blank">백양로 중고등부 알아보기</a>
+            </div>
+            <br><br><br><br>
+    
+            <button class="next" onclick="nextSlide()">&#10095;</button>
+            <div class="header-subtitle">이번 여름도 백신사와 함께</div>
+        </div>
+
+        <div class="gallery">
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion1.jpg&name=보라옷 곰돌이&price=9,900원&discount=10%&originalPrice=11,000원&description=“수고했어 오늘도”<br><br>바쁜 일상 지친 나를 포근하게 위로하는 귀여운 곰인형'">
+                <img src="fashion1.jpg" alt="Fashion 1">
+                <div class="price">
+                    <span class="discount">10%</span>
+                    9,900원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion2.jpg&name=푸른 줄무늬 잠옷세트&price=12,000원&discount=5%&originalPrice=15,700원&description=“편안한 밤, 상쾌한 아침”<br><br>어떠한 몸부림도 OK!<br>부드럽고 편안한 소재의 푸른 줄무늬 잠옷세트'">
+                <img src="fashion2.jpg" alt="Fashion 2">
+                <div class="price">
+                    <span class="discount">5%</span>
+                    12,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion3.jpg&name=아기 코트&price=1,500,000원&discount=99.99%&originalPrice=1,500,000원&description=“거울아, 거울아, 세상에서 누가 제일 예쁘니?”<br>“일단 당신은 아닙니다.“<br><br>이것만 있다면 나도 공주?<br>마법 지팡이로 예뻐져라 얍!'">
+                <img src="fashion3.jpg" alt="Fashion 3">
+                <div class="price">
+                    <span class="discount">99.99%</span>
+                    1,500,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion4.jpg&name=작업반장의 검정 조끼&price=5,000원&discount=25%&originalPrice=6,700원&description=“한마디로 시크, 다크”<br>간편하게 걸쳐입기 좋은 검정 조끼! 작업반장의 검정 조끼'">
+                <img src="fashion4.jpg" alt="Fashion 4">
+                <div class="price">
+                    <span class="discount">25%</span>
+                    5,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion5.jpg&name=꽃무늬 원피스&price=15,000원&discount=10%&originalPrice=16,700원&description=“어? 온통 꽃 뿐이네??”<br><br>더운 햇빛 아래 흔들리는 꽃밭<br>내가 꽃인지 꽃이 나인지 착시를 일으키는 원피스'">
+                <img src="fashion5.jpg" alt="Fashion 5">
+                <div class="price">
+                    <span class="discount">10%</span>
+                    15,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion6.jpg&name=디지털 기능성 상하의&price=25,000원&discount=15%&originalPrice=29,500원&description=“충성! 이병 이상준!”<br><br>싴하고 듬직한 밀리터리 룩<br>시원한 소재에 위장은 덤!'">
+                <img src="fashion6.jpg" alt="Fashion 6">
+                <div class="price">
+                    <span class="discount">15%</span>
+                    25,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion7.jpg&name=방수 앞치마&price=12,000원&discount=10%&originalPrice=13,500원&description=“오늘은 내가 짜파게티 요리사”<br><br><br>적당한 기장으로 패션센스도 Up!'">
+                <img src="fashion7.jpg" alt="Fashion 7">
+                <div class="price">
+                    <span class="discount">10%</span>
+                    12,000원
+                </div>
+            </div>
+            <div class="gallery-item" onclick="window.location.href='detail.html?image=fashion8.jpg&name=회색 줄무늬 반바지&price=18,000원&discount=20%&originalPrice=22,500원&description=“죄인이지만 죄수복은 아니라구요!”<br><br>이번 여름 최고의 선택! 검정 회색 줄무늬 반바지로 유쾌한 스타일을 완성하세요!'">
+                <img src="fashion8.jpg" alt="Fashion 8">
+                <div class="price">
+                    <span class="discount">20%</span>
+                    18,000원
+                </div>
+            </div>
+        </div>
+        <div class="disclaimer">
+            <p>모조품으로 인한 피해는 책임지지 않습니다.</p>
+        </div>
+    </div>
+
+    <script>
+        // 슬라이더 관련 변수
+        let currentSlide = 0;
+        const slides = document.querySelector('.slides');
+        const slideCount = document.querySelectorAll('.slide').length;
+
+        function showSlide(index) {
+            if (index >= slideCount) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = slideCount - 1;
+            } else {
+                currentSlide = index;
+            }
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function autoSlide() {
+            nextSlide();
+        }
+
+        // 자동 슬라이드
+        setInterval(autoSlide, 5000);
+
+        // 터치 드래그 슬라이더
+        let startX, endX;
+
+        slides.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
+
+        slides.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) {
+                nextSlide();
+            } else if (endX - startX > 50) {
+                prevSlide();
+            }
+        });
+
+        // 마우스 드래그 슬라이더
+        let isDragging = false;
+        let startXMouse;
+
+        slides.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startXMouse = e.clientX;
+            slides.style.transition = 'none'; // 드래그 중에는 애니메이션 끄기
+        });
+
+        slides.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            let currentXMouse = e.clientX;
+            let offset = startXMouse - currentXMouse;
+            slides.style.transform = `translateX(-${currentSlide * 100}px - ${offset}px)`;
+        });
+
+        slides.addEventListener('mouseup', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            let endXMouse = e.clientX;
+            let offset = startXMouse - endXMouse;
+            if (offset > 50) {
+                nextSlide();
+            } else if (offset < -50) {
+                prevSlide();
+            } else {
+                showSlide(currentSlide); // 슬라이드 위치 복원
+            }
+            slides.style.transition = 'transform 0.5s ease-in-out'; // 애니메이션 복원
+        });
+
+        slides.addEventListener('mouseleave', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            slides.style.transition = 'transform 0.5s ease-in-out'; // 애니메이션 복원
+        });
+
+        function toggleNotification() {
+            var popup = document.getElementById('notificationPopup');
+            var button = document.querySelector('.notification-button');
+            var rect = button.getBoundingClientRect();
+            popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+            if (popup.style.display === 'block') {
+                // Adjust popup position
+                popup.style.top = `${rect.bottom + window.scrollY}px`;
+                popup.style.left = `${rect.left + window.scrollX}px`;
+            }
+        }
+    
+        function showMail(id) {
+            document.getElementById('mailContent' + id).style.display = 'block';
+        }
+    
+        function closePopup(id) {
+            document.getElementById('mailContent' + id).style.display = 'none';
+        }
+    
+        function changeNotificationImage(imageUrl) {
+            document.querySelector('.notification-button').style.backgroundImage = `url('${imageUrl}')`;
+        }
+    
+        function closeNotificationPopup(event) {
+            var popup = document.getElementById('notificationPopup');
+            var button = document.querySelector('.notification-button');
+            if (!button.contains(event.target) && !popup.contains(event.target)) {
+                popup.style.display = 'none';
+            }
+        }
+    
+        changeNotificationImage('alarm1.jpg');
+        document.querySelectorAll('.notification-popup p').forEach((element) => {
+            element.addEventListener('click', () => {
+                changeNotificationImage('alarm2.jpg');
+            });
+        });
+    
+        // Add click event listener to document to close popup when clicking outside
+        document.addEventListener('click', closeNotificationPopup);
+    </script>
+</body>
+</html>
