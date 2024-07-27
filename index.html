@@ -272,14 +272,14 @@
 
         @media (max-width: 768px) {
             .sticky-header {
-                position:fixed;
                 font-size: 2em;
                 padding: 30px 10px;
                 white-space: nowrap;
             }
             .notification-button {
                 width: 20px;
-                right: calc(10%);
+                position: absolute; /* 또는 relative, fixed 등 필요한 값 */
+                left: 10%; /* calc()를 제거하고 직접 % 사용해보세요 */
                 height: 20px;
             }
             .header-subtitle {
