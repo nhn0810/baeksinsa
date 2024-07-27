@@ -277,12 +277,13 @@
             }
         
             .sticky-header .notification-button {
-                width: 20px; 
-                height: 20px; 
-                top: 10px; 
-                right: 2px; 
-                background-size: contain; 
-                background-repeat: no-repeat; 
+                position: absolute;
+                left: 0; /* 왼쪽 끝으로 이동 */
+                top: 10px; /* 상단으로부터의 위치 */
+                background-size: contain;
+                background-repeat: no-repeat;
+                width: 20px;
+                height: 20px;
             }
         
             .sticky-header .title {
